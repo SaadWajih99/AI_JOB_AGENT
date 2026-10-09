@@ -1,0 +1,39 @@
+Saad Wajih
+Senior Software Engineer
+saadqazi448@gmail.com | +1 (512) 555-0148 | Austin, TX (open to remote)
+
+SUMMARY
+Backend-focused software engineer with 7+ years building distributed systems,
+data pipelines and developer platforms in Python and Go. Led migrations to
+Kubernetes, cut API latency 45%, and shipped ML-powered features used by
+millions. Comfortable owning services end to end: design, implementation,
+observability and on-call.
+
+EXPERIENCE
+
+Senior Software Engineer — Fluxdata Inc. (2021–present)
+- Designed and operated a Kafka-based event pipeline processing 2B events/day (Python, Kafka, Airflow)
+- Led migration of 40 microservices to Kubernetes on AWS (EKS, Terraform, Helm), reducing infra cost 30%
+- Built FastAPI services with PostgreSQL and Redis; p95 API latency dropped from 800ms to 430ms
+- Mentored 4 engineers; introduced trunk-based development and CI/CD with GitHub Actions
+
+Software Engineer — Brightloop (2018–2021)
+- Developed data ingestion ETL in Python and SQL serving analytics for 120+ enterprise customers
+- Implemented Elasticsearch-based search with relevance tuning, boosting CTR 22%
+- Created React dashboards (TypeScript, Tailwind) for real-time pipeline monitoring
+
+Software Engineer Intern — Streamline Labs (2017)
+- Wrote Go microservices for a billing platform; added Stripe payment integration
+
+SKILLS
+Python, Go, FastAPI, Django, Flask, PostgreSQL, MySQL, Redis, Kafka, RabbitMQ,
+Airflow, ETL, Docker, Kubernetes, AWS, GCP, Terraform, Ansible, CI/CD, Git,
+Linux, REST API design, Microservices, System Design, Machine Learning basics,
+PyTorch, Pandas, NumPy, SQL, Grafana, Prometheus
+
+EDUCATION
+B.S. Computer Science — University of Texas at Austin (2014–2018)
+
+PROJECTS
+- openmetrics-exporter: open-source Prometheus exporter (2.1k stars) in Go
+- cv-tailor: CLI that rewrites resume bullets per job description with local LLMs

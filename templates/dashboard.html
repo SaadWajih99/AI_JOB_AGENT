@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AgenticApply — Agent Console</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ["Sora", "ui-sans-serif", "system-ui"],
+              mono: ["IBM Plex Mono", "ui-monospace", "SFMono-Regular"],
+            },
+            boxShadow: { glow: "0 0 40px rgba(56, 189, 248, 0.35)" },
+          },
+        },
+      };
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Sora:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      ::-webkit-scrollbar { width: 9px; height: 9px; }
+      ::-webkit-scrollbar-track { background: #020617; }
+      ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 8px; border: 2px solid #020617; }
+    </style>
+  </head>
+  <body class="min-h-screen bg-slate-950 font-sans text-slate-100 antialiased">
+    <header class="sticky top-0 z-30 border-b border-white/5 bg-slate-950/80 backdrop-blur-xl">
+      <div class="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
+        <a href="/" class="flex items-center gap-2.5">
+          <span class="grid h-9 w-9 place-items-center rounded-xl bg-gradient-to-br from-sky-400 to-indigo-500 text-lg shadow-glow">⚡</span>
+          <span class="text-lg font-semibold tracking-tight text-white">Agentic<span class="text-sky-400">Apply</span> <span class="ml-1 text-xs font-normal text-slate-500">agent console</span></span>
+        </a>
+        <div class="flex items-center gap-3 text-xs font-medium">
+          <span id="steelPill" class="rounded-full border border-slate-700 bg-slate-900 px-3 py-1.5 font-mono text-slate-400">steel: checking…</span>
+          <span id="enginePill" class="rounded-full border border-slate-700 bg-slate-900 px-3 py-1.5 font-mono text-slate-400">engine: –</span>
+        </div>
+      </div>
+    </header>
+
+    <main class="mx-auto max-w-6xl space-y-10 px-6 py-10">
+      <!-- STEP 1: CV UPLOAD + PROFILE -->
+      <section class="rounded-3xl border border-white/10 bg-slate-900/50 p-6 sm:p-8">
+        <h2 class="text-xl font-bold text-white"><span class="mr-2 text-sky-400">1</span>Upload your CV</h2>
+        <p class="mt-1 text-sm text-slate-400">PDF, DOCX or TXT. The agent extracts your contact info, skills and achievement bullets.</p>
+        <div class="mt-5 grid gap-6 md:grid-cols-2">
+          <div>
+            <div id="dropzone" class="cursor-pointer rounded-2xl border-2 border-dashed border-slate-700 bg-slate-950/60 p-8 text-center transition hover:border-sky-400/70 hover:shadow-glow">
+              <input id="fileInput" type="file" class="hidden" accept=".pdf,.docx,.txt" />
+              <p class="text-3xl">📄</p>
+              <p class="mt-2 text-sm font-semibold text-white">Drag &amp; drop your CV here</p>
+              <p class="mt-1 text-xs text-slate-500">or click to browse</p>
+              <p id="uploadStatus" class="mt-3 hidden text-xs text-emerald-400"></p>
+            </div>
+            <div class="mt-4 rounded-2xl border border-slate-800 bg-black/50 p-4">
+              <p class="text-[11px] uppercase tracking-wider text-slate-500">Parsed CV preview</p>
+              <pre id="cvPreview" class="mt-2 max-h-40 overflow-y-auto whitespace-pre-wrap font-mono text-[11px] leading-5 text-slate-400">no CV uploaded yet</pre>
+            </div>
+          </div>
+          <div class="rounded-2xl border border-slate-800 bg-slate-950/60 p-5">
+            <p class="text-[11px] uppercase tracking-wider text-slate-500">Agent profile (editable)</p>
+            <div class="mt-3 grid grid-cols-2 gap-3">
+              <input id="pFirst" placeholder="First name" class="rounded-xl border border-slate-800 bg-slate-900 px-3 py-2 text-sm outline-none focus:border-sky-400/60" />
+              <input id="pLast" placeholder="Last name" class="rounded-xl border border-slate-800 bg-slate-900 px-3 py-2 text-sm outline-none focus:border-sky-400/60" />
+              <input id="pEmail" placeholder="Email" class="col-span-2 rounded-xl border border-slate-800 bg-slate-900 px-3 py-2 text-sm outline-none focus:border-sky-400/60" />
+              <input id="pPhone" placeholder="Phone" class="col-span-2 rounded-xl border border-slate-800 bg-slate-900 px-3 py-2 text-sm outline-none focus:border-sky-400/60" />
+            </div>
+            <button id="saveProfile" class="mt-3 w-full rounded-xl bg-white/5 py-2 text-sm font-semibold text-white ring-1 ring-white/10 transition hover:bg-white/10">Save profile</button>
+            <p class="mt-4 text-[11px] uppercase tracking-wider text-slate-500">Detected skills</p>
+            <div id="skillChips" class="mt-2 flex flex-wrap gap-1.5 text-xs"><span class="text-slate-600">upload a CV to see skills</span></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- STEP 2: SEARCH -->
+      <section class="rounded-3xl border border-white/10 bg-slate-900/50 p-6 sm:p-8">
+        <h2 class="text-xl font-bold text-white"><span class="mr-2 text-sky-400">2</span>Search live job boards</h2>
+        <p class="mt-1 text-sm text-slate-400">Queries Greenhouse (Figma, Databricks, Duolingo, +15 companies), Remotive and Arbeitnow in real time.</p>
+        <div class="mt-5 flex flex-col gap-3 sm:flex-row">
+          <input id="queryInput" value="senior backend python engineer" placeholder="e.g. senior backend python engineer" class="flex-1 rounded-2xl border border-slate-800 bg-slate-950 px-5 py-3.5 text-sm outline-none focus:border-sky-400/60" />
+          <button id="searchBtn" class="rounded-2xl bg-gradient-to-r from-sky-500 to-indigo-500 px-8 py-3.5 text-sm font-semibold text-white shadow-glow transition hover:brightness-110 disabled:opacity-50">Search jobs</button>
+        </div>
+        <div class="mt-6 overflow-hidden rounded-2xl border border-slate-800">
+          <table class="w-full text-left text-sm">
+            <thead class="bg-slate-900/80 text-xs uppercase tracking-wider text-slate-500">
+              <tr>
+                <th class="px-4 py-3"><input id="checkAll" type="checkbox" class="rounded border-slate-600 bg-slate-900" /></th>
+                <th class="px-4 py-3">Role</th>
+                <th class="px-4 py-3">Company</th>
+                <th class="px-4 py-3">Source</th>
+                <th class="px-4 py-3 text-right">Match</th>
+              </tr>
+            </thead>
+            <tbody id="jobsBody" class="divide-y divide-slate-800/80">
+              <tr><td colspan="5" class="px-4 py-8 text-center text-slate-600">run a search to list opportunities</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p id="searchMeta" class="mt-2 text-xs text-slate-500"></p>
+      </section>
+
+      <!-- STEP 3: RUN + LIVE CONSOLE -->
+      <section class="rounded-3xl border border-white/10 bg-slate-900/50 p-6 sm:p-8">
+        <h2 class="text-xl font-bold text-white"><span class="mr-2 text-sky-400">3</span>Activate the agent</h2>
+        <p class="mt-1 text-sm text-slate-400">Tailors your CV per posting, fills each application in the Steel browser, and submits (or stages for review).</p>
+        <div class="mt-5 flex flex-wrap items-center gap-4">
+          <label class="flex items-center gap-2 text-sm text-slate-300">
+            Top jobs:
+            <input id="topN" type="number" value="3" min="1" max="20" class="w-20 rounded-xl border border-slate-800 bg-slate-950 px-3 py-2 text-sm outline-none focus:border-sky-400/60" />
+          </label>
+          <label class="flex cursor-pointer items-center gap-2 text-sm text-slate-300">
+            <input id="autoSubmit" type="checkbox" checked class="h-4 w-4 rounded border-slate-600 bg-slate-900" />
+            Auto-submit applications
+            <span class="text-xs text-slate-500">(uncheck = fill &amp; stage for review)</span>
+          </label>
+          <button id="runBtn" class="ml-auto rounded-2xl bg-gradient-to-r from-emerald-500 via-teal-500 to-sky-500 px-8 py-3.5 text-sm font-bold uppercase tracking-wide text-slate-950 shadow-lg transition hover:brightness-110 disabled:cursor-wait disabled:opacity-60">▶ Activate AI Job Agent</button>
+        </div>
+        <div class="mt-6 overflow-hidden rounded-2xl border border-slate-800 bg-black shadow-2xl">
+          <div class="flex items-center gap-2 border-b border-slate-800 bg-slate-900/60 px-4 py-3">
+            <span class="h-3 w-3 rounded-full bg-red-500/80"></span>
+            <span class="h-3 w-3 rounded-full bg-amber-400/80"></span>
+            <span class="h-3 w-3 rounded-full bg-emerald-400/80"></span>
+            <span class="ml-3 font-mono text-xs uppercase tracking-widest text-slate-500">live agent activity stream</span>
+            <span id="runStatus" class="ml-auto rounded-full border border-slate-700 bg-slate-800/80 px-3 py-1 font-mono text-[11px] uppercase tracking-wider text-slate-400">idle</span>
+          </div>
+          <div id="terminal" class="h-80 overflow-y-auto whitespace-pre-wrap break-words px-5 py-4 font-mono text-[12.5px] leading-6"><span class="text-slate-600">// awaiting activation…</span></div>
+        </div>
+      </section>
+
+      <!-- STEP 4: TRACKER -->
+      <section class="rounded-3xl border border-white/10 bg-slate-900/50 p-6 sm:p-8">
+        <div class="flex items-center justify-between">
+          <h2 class="text-xl font-bold text-white"><span class="mr-2 text-sky-400">4</span>Application tracker</h2>
+          <button id="refreshApps" class="rounded-xl bg-white/5 px-4 py-2 text-xs font-semibold text-slate-300 ring-1 ring-white/10 transition hover:bg-white/10">↻ Refresh</button>
+        </div>
+        <div class="mt-5 overflow-x-auto rounded-2xl border border-slate-800">
+          <table class="w-full text-left text-sm">
+            <thead class="bg-slate-900/80 text-xs uppercase tracking-wider text-slate-500">
+              <tr>
+                <th class="px-4 py-3">Role</th>
+                <th class="px-4 py-3">Company</th>
+                <th class="px-4 py-3">Status</th>
+                <th class="px-4 py-3">Evidence</th>
+                <th class="px-4 py-3">When</th>
+              </tr>
+            </thead>
+            <tbody id="appsBody" class="divide-y divide-slate-800/80">
+              <tr><td colspan="5" class="px-4 py-8 text-center text-slate-600">no applications yet</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+
+    <footer class="border-t border-white/5 py-6 text-center text-xs text-slate-600">
+      AgenticApply Agent Console · Steel engine on localhost:3000 · tailoring runs locally unless an LLM key is configured
+    </footer>
+
+    <script>
+      const $ = (id) => document.getElementById(id);
+      const escapeHtml = (t) => { const d = document.createElement('div'); d.textContent = t ?? ''; return d.innerHTML; };
+
+      /* ---------- status pills ---------- */
+      async function loadStatus() {
+        try {
+          const r = await fetch('/api/profile');
+          const d = await r.json();
+          if (d.profile) {
+            $('pFirst').value = d.profile.first_name || '';
+            $('pLast').value = d.profile.last_name || '';
+            $('pEmail').value = d.profile.email || '';
+            $('pPhone').value = d.profile.phone || '';
+            renderSkills(d.profile.skills || []);
+            $('uploadStatus').textContent = 'CV loaded: ' + (d.profile.filename || '(stored)');
+            $('uploadStatus').classList.remove('hidden');
+          }
+        } catch (e) { /* first load */ }
+        try {
+          const h = await (await fetch('/api/health')).json();
+          $('steelPill').textContent = 'steel: ' + (h.steel_reachable ? 'online' : 'DOWN') + ' · apps: ' + h.applications;
+          $('steelPill').className = h.steel_reachable
+            ? 'rounded-full border border-emerald-500/40 bg-emerald-500/10 px-3 py-1.5 font-mono text-emerald-400'
+            : 'rounded-full border border-red-500/40 bg-red-500/10 px-3 py-1.5 font-mono text-red-400';
+        } catch (e) { $('steelPill').textContent = 'api: down'; }
+      }
+
+      function renderSkills(skills) {
+        $('skillChips').innerHTML = skills.length
+          ? skills.map((s) => `<span class="rounded-full border border-sky-500/30 bg-sky-500/10 px-2 py-0.5 text-sky-300">${escapeHtml(s)}</span>`).join('')
+          : '<span class="text-slate-600">no skills detected</span>';
+      }
+
+      /* ---------- CV upload ---------- */
+      const dz = $('dropzone');
+      const fi = $('fileInput');
+      ['dragenter', 'dragover'].forEach((e) => dz.addEventListener(e, (ev) => { ev.preventDefault(); dz.classList.add('border-sky-400', 'shadow-glow'); }));
+      ['dragleave', 'drop'].forEach((e) => dz.addEventListener(e, (ev) => { ev.preventDefault(); dz.classList.remove('border-sky-400', 'shadow-glow'); }));
+      dz.addEventListener('drop', (ev) => { if (ev.dataTransfer.files[0]) uploadCv(ev.dataTransfer.files[0]); });
+      dz.addEventListener('click', () => fi.click());
+      fi.addEventListener('change', () => { if (fi.files[0]) uploadCv(fi.files[0]); });
+
+      async function uploadCv(file) {
+        const fd = new FormData();
+        fd.append('file', file);
+        $('uploadStatus').textContent = 'parsing ' + file.name + '…';
+        $('uploadStatus').classList.remove('hidden');
+        try {
+          const r = await fetch('/api/cv/upload', { method: 'POST', body: fd });
+          const d = await r.json();
+          if (!d.success) throw new Error('upload failed');
+          $('uploadStatus').textContent = '✓ ' + file.name + ' parsed (' + d.profile.text_chars + ' chars, ' + d.profile.skills.length + ' skills)';
+          $('enginePill').textContent = 'tailor: ' + d.engine;
+          $('pFirst').value = d.profile.first_name || '';
+          $('pLast').value = d.profile.last_name || '';
+          $('pEmail').value = d.profile.email || '';
+          $('pPhone').value = d.profile.phone || '';
+          $('cvPreview').textContent = d.text_preview || '';
+          renderSkills(d.profile.skills || []);
+        } catch (e) {
+          $('uploadStatus').textContent = '⚠ ' + e.message;
+        }
+      }
+
+      $('saveProfile').addEventListener('click', async () => {
+        await fetch('/api/profile', {
+          method: 'PUT', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ first_name: $('pFirst').value, last_name: $('pLast').value, email: $('pEmail').value, phone: $('pPhone').value }),
+        });
+        $('saveProfile').textContent = '✓ Saved';
+        setTimeout(() => ($('saveProfile').textContent = 'Save profile'), 1500);
+      });
+
+      /* ---------- search ---------- */
+      let jobsCache = [];
+      $('searchBtn').addEventListener('click', async () => {
+        const q = $('queryInput').value.trim();
+        if (!q) return;
+        $('searchBtn').disabled = true;
+        $('searchMeta').textContent = 'querying live boards…';
+        try {
+          const r = await fetch('/api/jobs/search', {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ query: q, limit: 25 }),
+          });
+          const d = await r.json();
+          jobsCache = d.jobs || [];
+          renderJobs(jobsCache);
+          $('searchMeta').textContent = jobsCache.length + ' relevant postings found';
+        } catch (e) { $('searchMeta').textContent = '⚠ ' + e.message; }
+        $('searchBtn').disabled = false;
+      });
+
+      function renderJobs(jobs) {
+        const body = $('jobsBody');
+        if (!jobs.length) { body.innerHTML = '<tr><td colspan="5" class="px-4 py-8 text-center text-slate-600">no matches - try different keywords</td></tr>'; return; }
+        body.innerHTML = jobs.map((j) => {
+          const pct = Math.round(j.match_score * 100);
+          const color = pct >= 40 ? 'text-emerald-400' : pct >= 20 ? 'text-amber-400' : 'text-slate-400';
+          return `<tr class="hover:bg-slate-900/60">
+            <td class="px-4 py-3"><input type="checkbox" class="jobCheck rounded border-slate-600 bg-slate-900" data-id="${escapeHtml(j.id)}" checked /></td>
+            <td class="px-4 py-3"><a href="${escapeHtml(j.url)}" target="_blank" class="text-slate-200 hover:text-sky-300">${escapeHtml(j.title)}</a></td>
+            <td class="px-4 py-3 text-slate-400">${escapeHtml(j.company)}</td>
+            <td class="px-4 py-3"><span class="rounded-full bg-slate-800/80 px-2 py-0.5 font-mono text-[11px] text-slate-400">${escapeHtml(j.source)}</span></td>
+            <td class="px-4 py-3 text-right font-mono ${color}">${pct}%</td></tr>`;
+        }).join('');
+      }
+      $('checkAll').addEventListener('change', () => {
+        document.querySelectorAll('.jobCheck').forEach((c) => (c.checked = $('checkAll').checked));
+      });
+
+      /* ---------- run agent (SSE) ---------- */
+      const TERM_TONES = { info: 'text-sky-300', ok: 'text-emerald-400', warn: 'text-amber-400', error: 'text-red-400', done: 'text-violet-300' };
+      function log(line, tone = 'info') {
+        const el = document.createElement('div');
+        el.className = TERM_TONES[tone] || 'text-slate-300';
+        el.textContent = line;
+        const t = $('terminal');
+        t.appendChild(el);
+        t.scrollTop = t.scrollHeight;
+      }
+
+      $('runBtn').addEventListener('click', async () => {
+        const q = $('queryInput').value.trim();
+        if (!q) { log('enter a search query first', 'warn'); return; }
+        const topN = Math.max(1, Math.min(20, parseInt($('topN').value || '3', 10)));
+        const autoSubmit = $('autoSubmit').checked;
+        $('runBtn').disabled = true;
+        $('runBtn').textContent = '◉ Agent working…';
+        $('runStatus').textContent = 'running';
+        $('runStatus').className = 'ml-auto animate-pulse rounded-full border border-emerald-500/40 bg-emerald-500/10 px-3 py-1 font-mono text-[11px] uppercase tracking-wider text-emerald-400';
+        $('terminal').innerHTML = '';
+        log('$ launching agent run (query="' + q + '" top=' + topN + ' auto_submit=' + autoSubmit + ')', 'done');
+        try {
+          const resp = await fetch('/api/agent/run', {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ query: q, top_n: topN, auto_submit: autoSubmit }),
+          });
+          const reader = resp.body.getReader();
+          const decoder = new TextDecoder();
+          let buf = '';
+          while (true) {
+            const { value, done } = await reader.read();
+            if (done) break;
+            buf += decoder.decode(value, { stream: true });
+            const chunks = buf.split('\n\n');
+            buf = chunks.pop() || '';
+            for (const chunk of chunks) {
+              const raw = chunk.split('\n').filter((l) => l.startsWith('data: ')).map((l) => l.slice(6)).join('');
+              if (!raw) continue;
+              try { const ev = JSON.parse(raw); log(ev.line, ev.tone); } catch { log(raw); }
+            }
+          }
+        } catch (e) { log('stream error: ' + e.message, 'error'); }
+        $('runStatus').textContent = 'complete';
+        $('runStatus').className = 'ml-auto rounded-full border border-sky-500/40 bg-sky-500/10 px-3 py-1 font-mono text-[11px] uppercase tracking-wider text-sky-400';
+        $('runBtn').disabled = false;
+        $('runBtn').textContent = '▶ Activate AI Job Agent';
+        loadApps();
+      });
+
+      /* ---------- tracker ---------- */
+      const STATUS_STYLES = {
+        submitted: 'border-emerald-500/40 bg-emerald-500/10 text-emerald-400',
+        staged: 'border-sky-500/40 bg-sky-500/10 text-sky-400',
+        blocked: 'border-amber-500/40 bg-amber-500/10 text-amber-400',
+        failed: 'border-red-500/40 bg-red-500/10 text-red-400',
+      };
+      async function loadApps() {
+        try {
+          const r = await fetch('/api/applications');
+          const d = await r.json();
+          const rows = d.applications || [];
+          if (!rows.length) { $('appsBody').innerHTML = '<tr><td colspan="5" class="px-4 py-8 text-center text-slate-600">no applications yet</td></tr>'; return; }
+          $('appsBody').innerHTML = rows.map((a) => `<tr class="hover:bg-slate-900/60">
+            <td class="px-4 py-3"><a href="${escapeHtml(a.url)}" target="_blank" class="text-slate-200 hover:text-sky-300">${escapeHtml(a.title)}</a><div class="mt-0.5 text-[11px] text-slate-500">${escapeHtml(a.detail || '')}</div></td>
+            <td class="px-4 py-3 text-slate-400">${escapeHtml(a.company)}</td>
+            <td class="px-4 py-3"><span class="rounded-full border px-2.5 py-1 font-mono text-[11px] uppercase ${STATUS_STYLES[a.status] || 'border-slate-600 text-slate-400'}">${escapeHtml(a.status)}</span></td>
+            <td class="px-4 py-3">${a.screenshot ? `<a href="/artifacts/${escapeHtml(a.screenshot.split('/').pop())}" target="_blank" class="font-mono text-xs text-sky-400 underline">screenshot ↗</a>` : '<span class="text-slate-600">–</span>'}</td>
+            <td class="px-4 py-3 font-mono text-xs text-slate-500">${escapeHtml((a.created_at || '').replace('T', ' '))}</td></tr>`).join('');
+        } catch (e) { /* keep UI alive */ }
+      }
+      $('refreshApps').addEventListener('click', loadApps);
+
+      loadStatus();
+      loadApps();
+    </script>
+  </body>
+</html>

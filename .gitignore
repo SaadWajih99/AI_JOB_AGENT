@@ -3,5 +3,10 @@ __pycache__/
 *.log
 run_output.txt
 verify_output.txt
+agent.db
+artifacts/
+uploads/
+*_out.json
+*_out.txt
 .venv/
 venv/
