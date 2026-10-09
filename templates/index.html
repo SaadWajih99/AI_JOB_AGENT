@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AgenticApply — The Autonomous AI Job Search Engine</title>
+    <meta
+      name="description"
+      content="Upload your resume. AgenticApply's autonomous browser agents tailor, track, and submit 1,000 job applications for you."
+    />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ["Sora", "ui-sans-serif", "system-ui"],
+              mono: ["IBM Plex Mono", "ui-monospace", "SFMono-Regular"],
+            },
+            boxShadow: {
+              glow: "0 0 40px rgba(56, 189, 248, 0.35)",
+              "glow-lg": "0 0 80px rgba(37, 99, 235, 0.45)",
+              "glow-violet": "0 0 60px rgba(139, 92, 246, 0.30)",
+            },
+            keyframes: {
+              float: {
+                "0%, 100%": { transform: "translateY(0)" },
+                "50%": { transform: "translateY(-10px)" },
+              },
+              blink: {
+                "0%, 100%": { opacity: "1" },
+                "50%": { opacity: "0" },
+              },
+            },
+            animation: {
+              float: "float 6s ease-in-out infinite",
+              blink: "blink 1s step-end infinite",
+            },
+          },
+        },
+      };
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Sora:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      html {
+        scroll-behavior: smooth;
+      }
+      ::-webkit-scrollbar {
+        width: 10px;
+        height: 10px;
+      }
+      ::-webkit-scrollbar-track {
+        background: #020617;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #1e293b;
+        border: 2px solid #020617;
+        border-radius: 8px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: #334155;
+      }
+      .grid-glow {
+        background-image:
+          linear-gradient(rgba(56, 189, 248, 0.06) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(56, 189, 248, 0.06) 1px, transparent 1px);
+        background-size: 48px 48px;
+        -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, #000 60%, transparent 100%);
+        mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, #000 60%, transparent 100%);
+      }
+    </style>
+  </head>
+  <body class="min-h-screen bg-slate-950 font-sans text-slate-100 antialiased selection:bg-sky-500/30">
+    <!-- Ambient background -->
+    <div class="pointer-events-none fixed inset-0 overflow-hidden">
+      <div class="absolute -top-40 left-1/2 h-[36rem] w-[36rem] -translate-x-1/2 rounded-full bg-sky-500/15 blur-3xl"></div>
+      <div class="absolute -right-32 top-1/3 h-96 w-96 rounded-full bg-indigo-600/15 blur-3xl"></div>
+      <div class="absolute -left-24 bottom-0 h-80 w-80 rounded-full bg-violet-600/10 blur-3xl"></div>
+      <div class="grid-glow absolute inset-0"></div>
+    </div>
+
+    <!-- Navigation -->
+    <header class="sticky top-0 z-40 border-b border-white/5 bg-slate-950/70 backdrop-blur-xl">
+      <div class="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
+        <a href="#" class="flex items-center gap-2.5">
+          <span class="grid h-9 w-9 place-items-center rounded-xl bg-gradient-to-br from-sky-400 to-indigo-500 text-lg shadow-glow">⚡</span>
+          <span class="text-lg font-semibold tracking-tight text-white">Agentic<span class="text-sky-400">Apply</span></span>
+        </a>
+        <nav class="hidden items-center gap-8 text-sm text-slate-400 md:flex">
+          <a href="#features" class="transition hover:text-white">Features</a>
+          <a href="#console" class="transition hover:text-white">Live Agent</a>
+          <a href="#" class="transition hover:text-white">Pricing</a>
+          <a href="#" class="transition hover:text-white">Docs</a>
+        </nav>
+        <a
+          href="#hero"
+          class="rounded-full bg-white/5 px-5 py-2 text-sm font-medium text-white ring-1 ring-white/10 transition hover:bg-white/10 hover:ring-sky-400/50"
+        >
+          Get early access
+        </a>
+      </div>
+    </header>
+
+    <!-- ================= HERO ================= -->
+    <main>
+      <section id="hero" class="relative mx-auto max-w-6xl px-6 pb-24 pt-20 text-center md:pt-28">
+        <span class="mx-auto inline-flex items-center gap-2 rounded-full border border-sky-400/30 bg-sky-500/10 px-4 py-1.5 text-xs font-medium text-sky-300">
+          <span class="relative flex h-2 w-2">
+            <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-sky-400 opacity-75"></span>
+            <span class="relative inline-flex h-2 w-2 rounded-full bg-sky-400"></span>
+          </span>
+          Autonomous Application Engine · now in private beta
+        </span>
+
+        <h1 class="mx-auto mt-8 max-w-4xl text-4xl font-extrabold leading-[1.08] tracking-tight text-white md:text-6xl">
+          Upload Your Resume.<br class="hidden md:block" />
+          We'll Apply to
+          <span class="bg-gradient-to-r from-sky-400 via-blue-400 to-indigo-400 bg-clip-text text-transparent">1,000 Jobs</span>
+          While You Relax.
+        </h1>
+        <p class="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-slate-400">
+          AgenticApply rewrites your CV for every single job description, then dispatches a fleet of
+          <span class="text-slate-200">Steel-powered browser agents</span> to fill, track, and submit each
+          application — 24/7, hands-free.
+        </p>
+
+        <!-- Drag & Drop Resume Box -->
+        <div class="mx-auto mt-10 max-w-2xl animate-float">
+          <div
+            id="dropzone"
+            class="group relative cursor-pointer rounded-3xl border-2 border-dashed border-slate-700 bg-slate-900/60 p-10 shadow-2xl backdrop-blur-xl transition duration-300 hover:border-sky-400/70 hover:shadow-glow"
+          >
+            <input id="fileInput" type="file" class="hidden" accept=".pdf,.doc,.docx,.txt" />
+            <div class="mx-auto grid h-16 w-16 place-items-center rounded-2xl bg-gradient-to-br from-sky-500/20 to-indigo-500/20 ring-1 ring-white/10">
+              <svg class="h-8 w-8 text-sky-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.6">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 16.5V9.75m0 0 3 3m-3-3-3 3M6.75 19.5a4.5 4.5 0 0 1-1.41-8.775 5.25 5.25 0 0 1 10.233-2.33 3 3 0 0 1 3.758 3.848A3.752 3.752 0 0 1 18 19.5H6.75Z" />
+              </svg>
+            </div>
+            <p class="mt-5 text-base font-semibold text-white">Drag &amp; drop your resume here</p>
+            <p class="mt-1.5 text-sm text-slate-400">
+              PDF, DOCX or TXT — ATS-parsed locally in seconds.
+              <span class="text-sky-400 underline decoration-dotted underline-offset-4">or browse files</span>
+            </p>
+            <div id="fileStatus" class="mt-4 hidden rounded-2xl border border-slate-700/80 bg-slate-950/80 px-4 py-3 text-sm"></div>
+          </div>
+
+          <!-- Target prompt + CTA -->
+          <div class="mt-5 flex flex-col gap-3 sm:flex-row">
+            <div class="relative flex-1">
+              <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500">🎯</span>
+              <input
+                id="jobPrompt"
+                type="text"
+                value="Senior Backend Engineer · Remote (US) · $150k+"
+                class="w-full rounded-2xl border border-slate-800 bg-slate-900/70 py-4 pl-11 pr-4 text-sm text-slate-200 outline-none transition placeholder:text-slate-500 focus:border-sky-400/60 focus:ring-2 focus:ring-sky-500/20"
+                placeholder="e.g. Senior Backend Engineer · Remote"
+              />
+            </div>
+            <button
+              id="uploadBtn"
+              type="button"
+              disabled
+              class="rounded-2xl bg-gradient-to-r from-sky-500 via-blue-500 to-indigo-500 px-8 py-4 text-sm font-semibold text-white shadow-glow-lg transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-40"
+            >
+              Queue 1,000 Applications
+            </button>
+          </div>
+          <p id="uploadResult" class="mt-4 hidden rounded-2xl border px-4 py-3 text-sm"></p>
+          <p class="mt-5 text-xs text-slate-500">
+            ✓ You approve every draft&nbsp;&nbsp;·&nbsp;&nbsp;✓ No spray-and-pray spam&nbsp;&nbsp;·&nbsp;&nbsp;✓ Cancel anytime
+          </p>
+        </div>
+      </section>
+
+      <!-- ================= VALUE PROPS ================= -->
+      <section id="features" class="relative mx-auto max-w-6xl px-6 pb-24">
+        <div class="mx-auto max-w-2xl text-center">
+          <p class="text-xs font-semibold uppercase tracking-[0.3em] text-sky-400">Why AgenticApply</p>
+          <h2 class="mt-4 text-3xl font-bold tracking-tight text-white md:text-4xl">
+            A full application team, compressed into one agent.
+          </h2>
+        </div>
+
+        <div class="mt-12 grid gap-6 md:grid-cols-3">
+          <!-- Card 1 : Hyper-Tailored CVs -->
+          <article class="group relative overflow-hidden rounded-3xl border border-white/10 bg-slate-900/60 p-7 backdrop-blur-xl transition duration-300 hover:-translate-y-1 hover:border-sky-400/40 hover:shadow-glow">
+            <div class="absolute -right-10 -top-10 h-32 w-32 rounded-full bg-sky-500/10 blur-2xl transition group-hover:bg-sky-500/20"></div>
+            <div class="grid h-12 w-12 place-items-center rounded-2xl bg-gradient-to-br from-sky-500/20 to-indigo-500/20 text-2xl ring-1 ring-white/10">🤖</div>
+            <h3 class="mt-5 text-lg font-semibold text-white">Hyper-Tailored CVs</h3>
+            <p class="mt-3 text-sm leading-relaxed text-slate-400">
+              Our LLM reads every job description and
+              <span class="text-slate-200">rewrites your bullet points on the fly</span> — mirroring the exact
+              keywords, tooling, and impact metrics each ATS scans for. One master resume in,
+              a thousand dynamically personalized variants out.
+            </p>
+            <div class="mt-5 rounded-2xl border border-slate-800 bg-black/50 p-4 font-mono text-[11px] leading-5">
+              <span class="text-slate-600">$ tailor --jd greenhouse/829104</span>
+              <span class="block text-emerald-400">✓ 14 bullets rewritten · ATS score 94/100</span>
+            </div>
+          </article>
+
+          <!-- Card 2 : Auto-Form Filling -->
+          <article class="group relative overflow-hidden rounded-3xl border border-white/10 bg-slate-900/60 p-7 backdrop-blur-xl transition duration-300 hover:-translate-y-1 hover:border-indigo-400/40 hover:shadow-glow-violet">
+            <div class="absolute -right-10 -top-10 h-32 w-32 rounded-full bg-indigo-500/10 blur-2xl transition group-hover:bg-indigo-500/20"></div>
+            <div class="grid h-12 w-12 place-items-center rounded-2xl bg-gradient-to-br from-indigo-500/20 to-violet-500/20 text-2xl ring-1 ring-white/10">🚀</div>
+            <h3 class="mt-5 text-lg font-semibold text-white">Auto-Form Filling</h3>
+            <p class="mt-3 text-sm leading-relaxed text-slate-400">
+              Our background <span class="text-slate-200">Steel Browser engine</span> opens each application in a
+              real Chromium session and navigates the forms for you — work history, education,
+              EEO questions, screening essays — with human-like pacing and stealth.
+            </p>
+            <div class="mt-5 flex flex-wrap gap-2">
+              <span class="rounded-full border border-slate-700 bg-slate-800/60 px-3 py-1 font-mono text-[11px] text-slate-300">Greenhouse</span>
+              <span class="rounded-full border border-slate-700 bg-slate-800/60 px-3 py-1 font-mono text-[11px] text-slate-300">Lever</span>
+              <span class="rounded-full border border-slate-700 bg-slate-800/60 px-3 py-1 font-mono text-[11px] text-slate-300">LinkedIn</span>
+            </div>
+          </article>
+
+          <!-- Card 3 : Real-Time Tracking Deck -->
+          <article class="group relative overflow-hidden rounded-3xl border border-white/10 bg-slate-900/60 p-7 backdrop-blur-xl transition duration-300 hover:-translate-y-1 hover:border-emerald-400/40 hover:shadow-glow">
+            <div class="absolute -right-10 -top-10 h-32 w-32 rounded-full bg-emerald-500/10 blur-2xl transition group-hover:bg-emerald-500/20"></div>
+            <div class="grid h-12 w-12 place-items-center rounded-2xl bg-gradient-to-br from-emerald-500/20 to-teal-500/20 text-2xl ring-1 ring-white/10">📊</div>
+            <h3 class="mt-5 text-lg font-semibold text-white">Real-Time Tracking Deck</h3>
+            <p class="mt-3 text-sm leading-relaxed text-slate-400">
+              Every submission streams into a live log — company, role, status, confirmation ID.
+              <span class="text-slate-200">Watch exactly what the agent is doing right now</span>,
+              then export the full pipeline to your favorite tracker.
+            </p>
+            <div class="mt-5 rounded-2xl border border-slate-800 bg-black/60 p-4 font-mono text-[11px] leading-6">
+              <div class="flex justify-between text-slate-500">
+                <span>LIVE FEED</span>
+                <span class="text-emerald-400">● submitting</span>
+              </div>
+              <div class="text-sky-300">GH-829104 · Sr. Backend Eng · <span class="text-emerald-400">submitted</span></div>
+              <div class="text-sky-300">LV-550123 · Platform Eng · <span class="text-amber-400">filling…</span></div>
+              <div class="text-sky-300">LI-3991287 · Staff Eng · <span class="text-slate-500">queued</span></div>
+              <div class="text-slate-600">+994 in queue<span class="animate-blink">▊</span></div>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <!-- ================= AGENT CONSOLE ================= -->
+      <section id="console" class="relative mx-auto max-w-6xl px-6 pb-24">
+        <div class="mx-auto max-w-2xl text-center">
+          <p class="text-xs font-semibold uppercase tracking-[0.3em] text-violet-400">Live Demo</p>
+          <h2 class="mt-4 text-3xl font-bold tracking-tight text-white md:text-4xl">
+            Watch the agent hunt in real time.
+          </h2>
+          <p class="mt-4 text-slate-400">
+            Hit activate — the stream below simulates a live Steel browser session crawling Indeed,
+            tailoring keywords, and submitting applications on your behalf.
+          </p>
+        </div>
+
+        <div class="mx-auto mt-10 max-w-4xl overflow-hidden rounded-3xl border border-slate-800 bg-black shadow-2xl shadow-violet-600/10 ring-1 ring-white/5">
+          <!-- Window title bar -->
+          <div class="flex items-center gap-2 border-b border-slate-800 bg-slate-900/60 px-5 py-3.5">
+            <span class="h-3 w-3 rounded-full bg-red-500/80"></span>
+            <span class="h-3 w-3 rounded-full bg-amber-400/80"></span>
+            <span class="h-3 w-3 rounded-full bg-emerald-400/80"></span>
+            <span class="ml-3 font-mono text-xs uppercase tracking-widest text-slate-500">agenticapply — agent.log</span>
+            <span
+              id="statusChip"
+              class="ml-auto rounded-full border border-slate-700 bg-slate-800/80 px-3 py-1 font-mono text-[11px] uppercase tracking-wider text-slate-400"
+            >Idle</span>
+          </div>
+
+          <!-- Scrollable terminal stream -->
+          <div
+            id="terminal"
+            class="h-80 overflow-y-auto whitespace-pre-wrap break-words px-6 py-5 font-mono text-[13px] leading-6 md:h-96"
+          ><span class="text-slate-600">// Live Autonomous Agent Activity Stream — awaiting activation...</span></div>
+
+          <!-- Action bar -->
+          <div class="flex flex-col items-center gap-3 border-t border-slate-800 bg-slate-900/40 px-6 py-5 sm:flex-row sm:justify-between">
+            <p class="font-mono text-xs text-slate-500">
+              engine: <span class="text-sky-400">steel-browser :3000</span> · pool:
+              <span class="text-emerald-400">8 workers</span> · stealth: <span class="text-violet-400">on</span>
+            </p>
+            <button
+              id="activateBtn"
+              type="button"
+              class="w-full rounded-2xl bg-gradient-to-r from-emerald-500 via-teal-500 to-sky-500 px-8 py-3.5 text-sm font-bold uppercase tracking-wide text-slate-950 shadow-lg transition hover:brightness-110 disabled:cursor-wait disabled:opacity-60 sm:w-auto"
+            >
+              ▶ Activate AI Job Agent
+            </button>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- ================= FOOTER ================= -->
+    <footer class="border-t border-white/5 bg-slate-950/80">
+      <div class="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 px-6 py-8 sm:flex-row">
+        <div class="flex items-center gap-2 text-sm text-slate-500">
+          <span class="grid h-7 w-7 place-items-center rounded-lg bg-gradient-to-br from-sky-400 to-indigo-500 text-xs">⚡</span>
+          © 2026 AgenticApply — The Autonomous AI Job Search Engine.
+        </div>
+        <div class="flex gap-6 text-xs text-slate-500">
+          <a href="#" class="transition hover:text-slate-300">Privacy</a>
+          <a href="#" class="transition hover:text-slate-300">Terms</a>
+          <a href="#" class="transition hover:text-slate-300">Careers</a>
+          <a href="#" class="transition hover:text-slate-300">Contact</a>
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      /* ============ Drag & drop resume staging ============ */
+      const dropzone = document.getElementById("dropzone");
+      const fileInput = document.getElementById("fileInput");
+      const uploadBtn = document.getElementById("uploadBtn");
+      const jobPrompt = document.getElementById("jobPrompt");
+      const uploadResult = document.getElementById("uploadResult");
+      const fileStatus = document.getElementById("fileStatus");
+      let selectedFile = null;
+
+      function escapeHtml(text) {
+        const div = document.createElement("div");
+        div.textContent = text;
+        return div.innerHTML;
+      }
+
+      ["dragenter", "dragover"].forEach((evt) =>
+        dropzone.addEventListener(evt, (e) => {
+          e.preventDefault();
+          dropzone.classList.add("border-sky-400", "shadow-glow");
+        })
+      );
+      ["dragleave", "drop"].forEach((evt) =>
+        dropzone.addEventListener(evt, (e) => {
+          e.preventDefault();
+          dropzone.classList.remove("border-sky-400", "shadow-glow");
+        })
+      );
+      dropzone.addEventListener("drop", (e) => {
+        const file = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0];
+        if (file) stageFile(file);
+      });
+      dropzone.addEventListener("click", () => fileInput.click());
+      fileInput.addEventListener("change", () => {
+        if (fileInput.files && fileInput.files[0]) stageFile(fileInput.files[0]);
+      });
+
+      function stageFile(file) {
+        selectedFile = file;
+        const sizeKb = (file.size / 1024).toFixed(1);
+        fileStatus.innerHTML =
+          '<span class="text-emerald-400">✓</span> <span class="text-slate-200">' +
+          escapeHtml(file.name) +
+          '</span> <span class="text-slate-500">(' + sizeKb + ' KB) — ready for parsing</span>';
+        fileStatus.classList.remove("hidden");
+        uploadBtn.disabled = false;
+      }
+
+      /* ============ Mock backend upload ============ */
+      uploadBtn.addEventListener("click", async () => {
+        if (!selectedFile) return;
+        uploadBtn.disabled = true;
+        uploadBtn.textContent = "Staging resume…";
+        uploadResult.classList.add("hidden");
+        try {
+          const res = await fetch("/api/upload-resume", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              prompt: jobPrompt.value.trim() || "General applications",
+              filename: selectedFile.name,
+              resume_text: "",
+            }),
+          });
+          const data = await res.json();
+          if (!res.ok || !data.success) throw new Error(data.detail || "upload failed");
+          uploadResult.className =
+            "mt-4 rounded-2xl border border-emerald-500/30 bg-emerald-500/10 px-4 py-3 text-sm text-emerald-300";
+          uploadResult.textContent =
+            "🚀 " + data.message + "  (upload " + data.upload_id + ")";
+        } catch (err) {
+          uploadResult.className =
+            "mt-4 rounded-2xl border border-amber-500/40 bg-amber-500/10 px-4 py-3 text-sm text-amber-300";
+          uploadResult.textContent = "⚠ " + err.message;
+        } finally {
+          uploadResult.classList.remove("hidden");
+          uploadBtn.disabled = false;
+          uploadBtn.textContent = "Queue 1,000 Applications";
+        }
+      });
+
+      /* ============ Agent console simulation ============ */
+      const terminal = document.getElementById("terminal");
+      const activateBtn = document.getElementById("activateBtn");
+      const statusChip = document.getElementById("statusChip");
+      let agentRunning = false;
+
+      function buildScript(criteria) {
+        return [
+          { t: 250, tone: "dim", text: "$ agentic-apply run --engine steel --quota 1000" },
+          { t: 450, tone: "info", text: "booting Steel Browser engine → cdp://localhost:3000 ..." },
+          { t: 600, tone: "ok", text: "CDP session established · session_id=agt_9f3ac21b · stealth=on" },
+          { t: 400, tone: "info", text: "spawning 8 browser workers from pool ✓" },
+          { t: 650, tone: "info", text: "worker-1 → navigating to https://www.indeed.com/jobs" },
+          { t: 550, tone: "ok", text: "authenticated as agent@agenticapply.ai · cookies persisted to encrypted profile" },
+          { t: 500, tone: "info", text: 'searching "' + criteria + '" ...' },
+          { t: 700, tone: "ok", text: "found 248 open roles · filter: posted ≤ 7d · salary ≥ $150k · remote" },
+          { t: 450, tone: "info", text: "ranking by semantic fit (cosine similarity, bge-small) ..." },
+          { t: 600, tone: "ok", text: "shortlisted 41 jobs with fit score ≥ 0.86" },
+          { t: 500, tone: "info", text: "tailoring resume → keywords: distributed systems, kubernetes, golang, sre" },
+          { t: 700, tone: "ok", text: "variant backend_cv_v3.pdf generated · ATS score 94/100 ✓" },
+          { t: 450, tone: "info", text: "worker-1 → greenhouse.com/apply/829104 (Sr. Backend Engineer, Vercel)" },
+          { t: 600, tone: "info", text: "auto-filling: contact ✓ experience ✓ education ✓ EEO ✓" },
+          { t: 450, tone: "info", text: "answering 4 screening questions from profile policy…" },
+          { t: 650, tone: "ok", text: "✓ submitted · confirmation GH-829104 · elapsed 38.2s" },
+          { t: 400, tone: "info", text: "worker-2 → lever.com/lever-demo/550123 (Platform Engineer, Ramp)" },
+          { t: 550, tone: "info", text: "parsing Lever multi-step form (3 of 3) ..." },
+          { t: 500, tone: "ok", text: "✓ submitted · confirmation LV-550123 · elapsed 29.7s" },
+          { t: 400, tone: "info", text: "worker-3 → linkedin.com/jobs/view/3991287 (Staff Engineer, Linear)" },
+          { t: 550, tone: "warn", text: "⚠ LinkedIn rate-limit detected → backing off 12s, rotating proxy pool" },
+          { t: 650, tone: "ok", text: "✓ submitted · confirmation LI-3991287" },
+          { t: 450, tone: "info", text: "workers 4–8: greenhouse ×6 · lever ×3 · workable ×2 in flight" },
+          { t: 700, tone: "ok", text: "progress: 87 / 1000 applications submitted · 0 failures" },
+          { t: 400, tone: "info", text: "syncing rows → Real-Time Tracking Deck ✓" },
+          { t: 450, tone: "info", text: "next batch queued (100 jobs) — ETA 42 min" },
+          { t: 500, tone: "done", text: "✦ agent running in background. Go relax — we've got this." },
+        ];
+      }
+
+      const TONES = {
+        dim: "text-slate-500",
+        info: "text-sky-300",
+        ok: "text-emerald-400",
+        warn: "text-amber-400",
+        done: "text-violet-300",
+      };
+
+      function appendLine(text, tone) {
+        const line = document.createElement("div");
+        line.className = TONES[tone] || "text-slate-300";
+        const time = new Date().toTimeString().slice(0, 8);
+        line.innerHTML =
+          '<span class="text-slate-600">[' + time + ']</span> ' + escapeHtml(text);
+        terminal.appendChild(line);
+        terminal.scrollTop = terminal.scrollHeight;
+      }
+
+      activateBtn.addEventListener("click", () => {
+        if (agentRunning) return;
+        agentRunning = true;
+        activateBtn.disabled = true;
+        activateBtn.textContent = "◉ Agent Working…";
+        statusChip.textContent = "Running";
+        statusChip.className =
+          "ml-auto animate-pulse rounded-full border border-emerald-500/40 bg-emerald-500/10 px-3 py-1 font-mono text-[11px] uppercase tracking-wider text-emerald-400";
+        terminal.innerHTML = "";
+
+        const criteria = jobPrompt.value.trim() || "Senior Backend Engineer · Remote (US)";
+        const script = buildScript(criteria);
+        let elapsed = 0;
+        script.forEach((step, i) => {
+          elapsed += step.t;
+          setTimeout(() => {
+            appendLine(step.text, step.tone);
+            if (i === script.length - 1) {
+              agentRunning = false;
+              activateBtn.disabled = false;
+              activateBtn.textContent = "▶ Activate AI Job Agent";
+              statusChip.textContent = "Complete";
+              statusChip.className =
+                "ml-auto rounded-full border border-sky-500/40 bg-sky-500/10 px-3 py-1 font-mono text-[11px] uppercase tracking-wider text-sky-400";
+            }
+          }, elapsed);
+        });
+      });
+    </script>
+  </body>
+</html>

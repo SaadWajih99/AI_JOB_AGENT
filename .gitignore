@@ -1,0 +1,7 @@
+__pycache__/
+*.py[cod]
+*.log
+run_output.txt
+verify_output.txt
+.venv/
+venv/

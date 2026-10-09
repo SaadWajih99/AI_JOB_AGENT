@@ -1,0 +1,5 @@
+fastapi
+uvicorn
+aiohttp
+playwright
+jinja2
